@@ -12,10 +12,18 @@ ymin = 0;
 ymax = 20;
 ny = nx; %making it a square makes some off the plotting later easier
 
+tmax = 2;%no t min, as starting at 0
+nt = nx;
+
 dx = (xmax - xmin)/(nx-1);
 dy = (ymax - ymin)/(ny-1);
+dt = (tmax)/(nt-1);
 
 x = xmin:dx:xmax;
 y = ymin:dy:ymax;
+t = 0:dt:tmax;
 
 
+
+u = zeros(nx,ny);
+surf(x,y,u)
