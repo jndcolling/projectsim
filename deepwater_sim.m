@@ -24,6 +24,8 @@ y = ymin:dy:ymax;
 t = 0:dt:tmax;
 
 
-
-u = zeros(nx,ny);
-surf(x,y,u)
+u = zeros(nx,ny,nt);
+u0 = zeros(100,100);
+disp(u0)
+%disp(u)
+surf(x,y,u0)
