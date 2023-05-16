@@ -2,6 +2,8 @@ clc
 clear
 close all
 
+c = 1; %speed of water in m/s
+
 xmin = 0;
 xmax = 20;
 nx = 100; %number of datapoints
@@ -15,4 +17,5 @@ dy = (ymax - ymin)/(ny-1);
 
 x = xmin:dx:xmax;
 y = ymin:dy:ymax;
+
 
