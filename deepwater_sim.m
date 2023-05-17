@@ -25,7 +25,10 @@ t = 0:dt:tmax;
 
 
 u = zeros(nx,ny,nt);
-u0 = zeros(100,100);
-disp(u0)
-%disp(u)
-surf(x,y,u0)
+
+
+disp(u(1,1,1))
+surf(x,y,u(1:100,1:100,1)) %testing t = 0, slicing in matlab is a bitch
+
+
+%calcing "differentials"
