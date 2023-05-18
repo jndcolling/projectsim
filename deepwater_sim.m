@@ -29,4 +29,3 @@ u0 = zeros(100,100);
 disp(u0)
 %disp(u)
 surf(x,y,u0)
-%test line
