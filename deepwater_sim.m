@@ -27,5 +27,14 @@ t = 0:dt:tmax;
 u = zeros(nx,ny,nt);
 
 
-disp(u(1,1,1))
-surf(x,y,u(1:100,1:100,1)) %testing t = 0, slicing in matlab is painful
+for i = 1:nx %just messing about with loops atm
+    u(i,i,1) = nx;
+end
+
+surf(x,y,u(1:100,1:100,1)) %plotting the plane at t=0
+title('Numerical Solution')
+xlabel('X')
+ylabel('Y')
+zlabel("U")
+
+
