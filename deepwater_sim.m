@@ -24,17 +24,23 @@ y = ymin:dy:ymax;
 t = 0:dt:tmax;
 
 
-u = zeros(nx,ny,nt);
+u = zeros(nx,ny,nt);%creating 3d array containing the amplitudes for a given x,y,t
 
-
-for i = 1:nx %just messing about with loops atm
-    u(i,i,1) = nx;
+for q =1:nt
+    for i = 2:nx %just messing about with loops atm
+        u(q,100,q) = 10*q^2;
+    end
 end
 
-surf(x,y,u(1:100,1:100,1)) %plotting the plane at t=0
-title('Numerical Solution')
-xlabel('X')
-ylabel('Y')
-zlabel("U")
+
+for q = 1:nt
+    surf(x,y,u(1:100,1:100,1)) %plotting the plane at t=0
+    title('Numerical Solution',q)
+    xlabel('X')
+    ylabel('Y')
+    zlabel("U")
+    drawnow;
+end
+
 
 
