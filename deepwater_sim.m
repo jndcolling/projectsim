@@ -28,13 +28,13 @@ u = zeros(nx,ny,nt);%creating 3d array containing the amplitudes for a given x,y
 
 for q =1:nt
     for i = 2:nx %just messing about with loops atm
-        u(q,100,q) = 10*q^2;
+        u(i,q,q) = nx*q;
     end
 end
 
 
 for q = 1:nt
-    surf(x,y,u(1:100,1:100,1)) %plotting the plane at t=0
+    surf(x,y,u(1:100,1:100,q)) %plotting the plane at t=0
     title('Numerical Solution',q)
     xlabel('X')
     ylabel('Y')
