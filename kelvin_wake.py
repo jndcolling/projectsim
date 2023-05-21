@@ -3,9 +3,9 @@ import scipy.integrate as integrate
 import matplotlib.pyplot as plt
 from matplotlib import cm
 
-x_list = np.linspace(0, 10, 10)
-y_list = np.linspace(0, 10, 10)
-z_list = np.zeros(100)
+x_list = np.linspace(-10, 10, 20)
+y_list = np.linspace(-10, 10, 20)
+z_list = np.zeros(400)
 
 
 l = 0.5   # wavelength
@@ -23,7 +23,7 @@ for x in x_list:
         np.put(z_list, count, z)
         count += 1
 X, Y = np.meshgrid(x_list, y_list)
-z_list = np.reshape(z_list, (10, 10))
+z_list = np.reshape(z_list, (20, 20))
 fig, ax = plt.subplots(subplot_kw={"projection": "3d"})
 ax.plot_surface(X, Y, z_list, vmin=z_list.min() * 2, cmap=cm.Blues)
 
