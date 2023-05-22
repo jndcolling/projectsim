@@ -3,10 +3,11 @@
 
 figure
 v = 1;    % speed of the boat
-c = 1;    % speed of the wave
+l = 0.5;  % wavelength
+c = sqrt(9.81 * l / (2 * pi));    % speed of the wave
 wave_sources = [0 0];    % list of all positions where the boat has been
-xlim([0 50])    % limits of axes
-ylim([-25 25])
+xlim([0 20])    % limits of axes
+ylim([-10 10])
 %axis square
 for t = 1:10
     boat_X = v*t;    % boat position, assume travelling x-direction only
