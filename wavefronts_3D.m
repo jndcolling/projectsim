@@ -24,5 +24,12 @@ r = sqrt(X.^2 + Y.^2);    % radius
 l = 1;    % wavelength
 k = 2 * pi / l;    % wave number
 Z = sin(k*r);
-
 surf(X,Y,Z)
+v = 1;    % speed of the boat
+
+for t = 1:10
+    r = sqrt((X-v*t).^2+Y.^2);
+    Z = Z + sin(k*r);
+    pause(1)    % wait 1 second before next iteration
+    surf(X,Y,Z)
+end
