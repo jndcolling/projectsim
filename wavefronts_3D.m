@@ -1,39 +1,28 @@
-figure
-xlim([-10 10])    % limits of axes
-ylim([-10 10])
-
 %/ define coordinates /%
-xmin = -20;
-xmax = 2;
-nx = 100;
-
-ymin = -20;
-ymax = 20;
+xmin = -40;    % adjust bounds as desired
+xmax = 40;
+nx = 300;
+ymin = 10;
+ymax = 50;
 ny = nx;
 
 dx = (xmax - xmin)/(nx-1);
 dy = (ymax - ymin)/(ny-1);
-
 x = xmin:dx:xmax;
 y = ymin:dy:ymax;
-
 [X, Y] = meshgrid(x, y);
 
-for p = 1:10
-    l = p / 5;
-    %/ define Z /%
-    r = sqrt(X.^2 + Y.^2);    % radius
-    %l = 1;    % wavelength
-    k = 2 * pi / l;    % wave number
-    Z = sin(k*r);
-    surf(X,Y,Z)
-    v = 1;    % speed of the boat
-    c = sqrt(9.81 * l / (2 * pi));    % speed of the wave
-    
-    for t = 1:10
-        r = sqrt((X-v*t).^2+Y.^2);
-        Z = Z + sin(k*r);
-        %pause(1)    % wait 1 second before next iteration
-        surf(X,Y,Z)
+%/ determine height Z /%
+
+for p = 1:200      % looping 200 times to get 200 different frequencies
+    w = p / 20;    % define each frequency w
+    k = w^2 / 9.81;    % wavenumber, found from dispersion relation
+    v = 1.5;    % speed of the boat
+    Z = 0;      % initialise height Z
+    for t = 0:50    % loop for 50 time intervals
+        tprime = t/20;    % divide t to get smaller intervals
+        r = sqrt((X+v*tprime).^2+Y.^2);    % distance from boat's position
+        Z = Z + sin(k*r);    % add new wave to the existing Z
     end
 end
+surf(X,Y,Z)    % plot
