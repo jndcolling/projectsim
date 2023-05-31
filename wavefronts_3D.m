@@ -1,6 +1,6 @@
 %/ define coordinates /%
 xmin = 0;    % adjust bounds as desired
-xmax = 90;
+xmax = 60;
 nx = 200;
 ymin = -100;
 ymax = 100;
@@ -15,15 +15,15 @@ y = ymin:dy:ymax;
 %/ determine height Z /%
 Z = 0;      % initialise height Z
 g = 9.81;
-v = 1.5;    % speed of the boat
+v = 1.2;    % speed of the boat
 tmax = 300;  % number of time periods to loop t over (not seconds)
 tdivide = 5; % just to get smaller intervals
-for p = 1:300        % looping 200 times to get 200 different frequencies
-    w = p / 3;      % define each frequency w
+for p = 1:100        % looping 200 times to get 200 different frequencies
+    w = p / 20;      % define each frequency w
     k = w^2 / g;     % wavenumber, found from dispersion relation
     cp = sqrt(g/k);  % phase velocity of wave
     cg = 0.5 * cp;   % group velocity of wave
-    A = exp(-k*v);    % amplitude of the wave produced
+    A = sqrt(exp(-k*v));    % amplitude of the wave produced
     for t = 0:tmax    % loop for 50 time intervals
         max_distance = cg * (tmax - t);
         tprime = t/tdivide;    % divide t to get smaller intervals
@@ -36,4 +36,4 @@ for p = 1:300        % looping 200 times to get 200 different frequencies
     end
 end
 surf(X,Y,Z)    % plot
-%zlim([10 200])    % limit range of z values
+%zlim([-50 30])    % limit range of z values
