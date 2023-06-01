@@ -17,7 +17,6 @@ Z = 0;      % initialise height Z
 g = 9.81;
 v = 5;    % speed of the boat
 tmax = 50;  % number of time periods to loop t over (not seconds)
-tdivide = 5; % just to get smaller intervals
 for p = 1:200        % looping 200 times to get 200 different frequencies
     w = p/20;      % define each frequency w
     k = w^2 / g;     % wavenumber, found from dispersion relation
