@@ -1,9 +1,9 @@
 %/ define coordinates /%
 xmin = 0;    % adjust bounds as desired
-xmax = 350;
+xmax = 150;
 nx = 600;
-ymin = -100;
-ymax = 100;
+ymin = -80;
+ymax = 80;
 ny = 200;
 
 dx = (xmax - xmin)/(nx-1);
@@ -16,13 +16,13 @@ y = ymin:dy:ymax;
 h = 0.1;
 Z = 0;      % initialise height Z
 g = 9.81;
-v = 8;    % speed of the boat
-l = 25;     % length of the boat
+v = 1;    % speed of the boat
+l = 35;     % length of the boat
 Fr = v / sqrt(g*l);    % Froude number
 k_0 = 2 * pi / l;
 w_0 = sqrt(g*k_0);
 k_divider = 50;
-tmax = 35;  % final time
+tmax = 70;  % final time
 for p = 30:1000   % set up 1000 iterations
     k = p/k_divider ;      % define each wavenumber 
 
@@ -47,8 +47,8 @@ for p = 30:1000   % set up 1000 iterations
         max_distance = cg * (tmax - t); % max distance a wave can travel
         
         % Single point source code
-       r = sqrt((X-v*t).^2+(Y).^2); % distance from boat position 
-       Z = Z - A*sin(k*r.*(r<max_distance) - w*(tmax - t).*(r<max_distance));    % add new Z part if feasible https://uk.mathworks.com/matlabcentral/answers/474717-mesh-surf-plot-of-function-with-if-statements
+       r = sqrt((X-2*t).^2+(Y).^2); % distance from boat position 
+       Z = Z + A*sin(k*r.*(r<max_distance) - w*(tmax - t).*(r<max_distance)).*(cg<v);    % add new Z part if feasible https://uk.mathworks.com/matlabcentral/answers/474717-mesh-surf-plot-of-function-with-if-statements
         % btw. the negative is me cheating. the surface was upside down for some reason
 
         % 4 moving point sources
