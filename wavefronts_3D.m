@@ -13,45 +13,52 @@ y = ymin:dy:ymax;
 [X, Y] = meshgrid(x, y);
 
 %/ determine height Z /%
-h = 0.1;
-Z = 0;      % initialise height Z
-g = 9.81;
-v = 1;    % speed of the boat
-l = 35;     % length of the boat
-Fr = v / sqrt(g*l);    % Froude number
+h = 0.5;                % water depth
+Z = 0;                  % initialise height Z
+g = 9.81;               % gravitational acceleration
+v = 3;                  % speed of the boat
+l = 0.1;                 % length of the boat
+Fr = v / sqrt(g*l);     % Froude number
+sigma = 0.072;          % surface tension https://www.engineeringtoolbox.com/water-surface-tension-d_597.html
+rho = 1000;             % density of water
 k_0 = 2 * pi / l;
-w_0 = sqrt(g*k_0);
-k_divider = 50;
-tmax = 70;  % final time
-for p = 30:1000   % set up 1000 iterations
-    k = p/k_divider ;      % define each wavenumber 
+%w_0 = sqrt(g*k_0);                     % for deep water
+%w_0 = sqrt(g*k_0*tanh(k_0*h));          % for shallow water
+w_0 = sqrt((k_0*g + sigma*k_0^3/rho) * tanh(k_0*h));  % for surface tension
+k_divider = 50;         % to get smaller increments of k
+tmax = 70;              % final time to iterate to
+for p = 30:1000   % set up many iterations for k
+    k = p/k_divider ;      % define each wavenumber using the divider
 
-    %  general dispersion relation
-%    w = sqrt(g*k*tanh(k*h));     % frequency, found from general dispersion relation
-%    cp = sqrt(g/k.*tanh(k.*h));  % phase velocity of wave
-%    cg =  0.5*cp.*(1+(h*k)./(cosh(k*h).*sinh(k*h)));   % group velocity of wave
+    %/ general dispersion relation (surface tension and depth considered)
+    w = sqrt((k*g + sigma*k^3/rho) * tanh(k*h));
+    cp = w / k;
+    cg = ((g + 3*sigma*k^2/rho) * tanh(k*h) + (k*g + sigma*k^3/rho) / (cosh(k*h))^2) / (2*w);
+
+    %/  shallow-depth dispersion relation
+    %w = sqrt(g*k*tanh(k*h));     % frequency, found from general dispersion relation
+    %cp = sqrt(g/k.*tanh(k.*h));  % phase velocity of wave
+    %cg =  0.5*cp.*(1+(h*k)./(cosh(k*h).*sinh(k*h)));   % group velocity of wave
    
-    % deep water relation
-    w = sqrt(g*k); 
-    cp= sqrt(g/k);
-    cg= 0.5*cp;
+    %/ deep water relation
+    %w = sqrt(g*k); 
+    %cp= sqrt(g/k);
+    %cg= 0.5*cp;
     
     % amplitude of the wave produced - assumed to be gaussian distributed
-    % (in the article it uses this gaussian specifically)
-    %A = sqrt(exp(-w^2*v/g));
-    %A = sqrt(exp(-((k-k_0)*v)^2));
-    A = sqrt(exp(-v*(w-w_0)^2/g));
+    %A = sqrt(exp(-w^2*v/g));    % in the article it uses this gaussian specifically
+    A = sqrt(exp(-v*(w-w_0)^2/g));    % adjusted to be centred on w_0 – defined for the wavelength equal to boat length
 
-    for i = 0:tmax    % loop from initial time to final time
+    for i = 0:tmax                      % loop from initial time to final time
         t = i;
         max_distance = cg * (tmax - t); % max distance a wave can travel
         
-        % Single point source code
-       r = sqrt((X-2*t).^2+(Y).^2); % distance from boat position 
-       Z = Z + A*sin(k*r.*(r<max_distance) - w*(tmax - t).*(r<max_distance)).*(cg<v);    % add new Z part if feasible https://uk.mathworks.com/matlabcentral/answers/474717-mesh-surf-plot-of-function-with-if-statements
-        % btw. the negative is me cheating. the surface was upside down for some reason
+        %/ For a single point boat
+        r = sqrt((X-2*t).^2+(Y).^2);       % distance from boat position 
+        Z = Z + A*sin(k*r.*(r<max_distance) - w*(tmax - t).*(r<max_distance)).*(cg<v);    % add new Z part if feasible https://uk.mathworks.com/matlabcentral/answers/474717-mesh-surf-plot-of-function-with-if-statements
+        % may sometimes need to subtract from Z. Unclear why.
 
-        % 4 moving point sources
+        %/ For a boat consisting of four moving points
 %        r1 = sqrt((X-v*t).^2+(Y+4).^2);    % distance from boat's position
 %        r2 = sqrt((X-v*t).^2+(Y-4).^2);
 %        r3 = sqrt((X-v*t+10).^2+(Y+4).^2);    % distance from boat's position
