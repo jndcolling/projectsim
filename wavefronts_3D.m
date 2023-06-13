@@ -17,7 +17,7 @@ h = 20;                % water depth
 Z = 0;                  % initialise height Z
 g = 9.81;               % gravitational acceleration
 v = 0.5;                  % speed of the boat
-l = 0.25/(9.81 * 0.25);     % length of the boat
+l = 0.25/(9.81 * 0.5);     % length of the boat
 Fr = v / sqrt(g*l);     % Froude number
 sigma = 0.072;          % surface tension https://www.engineeringtoolbox.com/water-surface-tension-d_597.html
 rho = 1000;             % density of water
@@ -56,7 +56,7 @@ for k = k_0/6:k_0*6     % set up many iterations for k
         
         %/ For a single point boat
         r = sqrt((X-t).^2+(Y).^2);       % distance from boat position 
-        Z = Z - A*sin(k*r.*(r<max_distance) - w*(tmax*dt - t).*(r<max_distance));    % add new Z part if feasible https://uk.mathworks.com/matlabcentral/answers/474717-mesh-surf-plot-of-function-with-if-statements
+        Z = Z - A*sin(k*r.*(r<max_distance) - w*(tmax*dt - t)/(v*dt).*(r<max_distance));    % add new Z part if feasible https://uk.mathworks.com/matlabcentral/answers/474717-mesh-surf-plot-of-function-with-if-statements
         % may sometimes need to subtract from Z. Unclear why.
 
         %/ For a boat consisting of four moving points
