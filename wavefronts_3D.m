@@ -1,10 +1,10 @@
 %/ define coordinates /%
 xmin = 0;    % adjust bounds as desired
-xmax = 150;
+xmax = 20;
 nx = 600;
-ymin = -80;
-ymax = 80;
-ny = 200;
+ymin = -20;
+ymax = 20;
+ny = 150;
 
 dx = (xmax - xmin)/(nx-1);
 dy = (ymax - ymin)/(ny-1);
@@ -13,11 +13,11 @@ y = ymin:dy:ymax;
 [X, Y] = meshgrid(x, y);
 
 %/ determine height Z /%
-h = 0.5;                % water depth
+h = 20;                % water depth
 Z = 0;                  % initialise height Z
 g = 9.81;               % gravitational acceleration
-v = 3;                  % speed of the boat
-l = 0.1;                 % length of the boat
+v = 0.5;                  % speed of the boat
+l = 0.25/(9.81 * 0.1);     % length of the boat
 Fr = v / sqrt(g*l);     % Froude number
 sigma = 0.072;          % surface tension https://www.engineeringtoolbox.com/water-surface-tension-d_597.html
 rho = 1000;             % density of water
@@ -25,10 +25,11 @@ k_0 = 2 * pi / l;
 %w_0 = sqrt(g*k_0);                     % for deep water
 %w_0 = sqrt(g*k_0*tanh(k_0*h));          % for shallow water
 w_0 = sqrt((k_0*g + sigma*k_0^3/rho) * tanh(k_0*h));  % for surface tension
-k_divider = 50;         % to get smaller increments of k
-tmax = 70;              % final time to iterate to
-for p = 30:1000   % set up many iterations for k
-    k = p/k_divider ;      % define each wavenumber using the divider
+k_divider = 20;         % to get smaller increments of k
+dt = 0.01;              % time interval
+tmax = 100;              % final time to iterate to
+for k = k_0/6:k_0*6     % set up many iterations for k
+    %k = p/k_divider ;      % define each wavenumber using the divider
 
     %/ general dispersion relation (surface tension and depth considered)
     w = sqrt((k*g + sigma*k^3/rho) * tanh(k*h));
@@ -46,16 +47,16 @@ for p = 30:1000   % set up many iterations for k
     %cg= 0.5*cp;
     
     % amplitude of the wave produced - assumed to be gaussian distributed
-    %A = sqrt(exp(-w^2*v/g));    % in the article it uses this gaussian specifically
-    A = sqrt(exp(-v*(w-w_0)^2/g));    % adjusted to be centred on w_0 – defined for the wavelength equal to boat length
+    %A = sqrt(exp(-w^2*v/g));    %/ in the article it uses this gaussian specifically
+    A = sqrt(exp(-v*(w-w_0)^2/g));    %/ adjusted to be centred on w_0 – defined for the wavelength equal to boat length
 
     for i = 0:tmax                      % loop from initial time to final time
         t = i;
         max_distance = cg * (tmax - t); % max distance a wave can travel
         
         %/ For a single point boat
-        r = sqrt((X-2*t).^2+(Y).^2);       % distance from boat position 
-        Z = Z + A*sin(k*r.*(r<max_distance) - w*(tmax - t).*(r<max_distance)).*(cg<v);    % add new Z part if feasible https://uk.mathworks.com/matlabcentral/answers/474717-mesh-surf-plot-of-function-with-if-statements
+        r = sqrt((X-dt*t).^2+(Y).^2);       % distance from boat position 
+        Z = Z - A*sin(k*r.*(r<max_distance) - w*(tmax - t).*(r<max_distance));    % add new Z part if feasible https://uk.mathworks.com/matlabcentral/answers/474717-mesh-surf-plot-of-function-with-if-statements
         % may sometimes need to subtract from Z. Unclear why.
 
         %/ For a boat consisting of four moving points
@@ -70,3 +71,6 @@ for p = 30:1000   % set up many iterations for k
     end
 end
 surf(X,Y,Z)    % plot
+disp(Fr)
+alpha = atand((sqrt(2*pi*Fr^2 - 1)) / (4*pi*Fr^2 - 1));
+disp(alpha)
